@@ -16,6 +16,8 @@
 
 package com.devoxx.watson;
 
+import com.devoxx.watson.model.ConversationContext;
+import com.devoxx.watson.model.ConversationContextSystem;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageRequest;
 import com.ibm.watson.developer_cloud.conversation.v1.ConversationService;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
@@ -110,12 +112,24 @@ public class AskDevoxxController {
     // Use the previously configured service object to make a call to the conversational service
     MessageResponse response = service.message(WORKSPACE_ID, request).execute();
 
-
     inquiryResponseNear.setInquiryText(inquiryText);
 
-    inquiryResponseNear.setResponseText(response.getText().toString());
+    inquiryResponseNear.setResponseText(response.getTextConcatenated(", "));
 
-    inquiryResponseNear.setContext(response.getContext().get("conversation_id").toString());
+    Map<String, Object> responseContext = response.getContext();
+    Map<String, Object> responseContextSystem = (Map)responseContext.get("system");
+    ConversationContextSystem conversationContextSystem = null;
+    if (responseContextSystem != null) {
+      conversationContextSystem = new ConversationContextSystem(
+          responseContextSystem.get("dialog_stack") != null ? responseContextSystem.get("dialog_stack").toString() : "",
+          responseContextSystem.get("dialog_turn_counter") != null ? responseContextSystem.get("dialog_turn_counter").toString() : "",
+          responseContextSystem.get("dialog_request_counter") != null ? responseContextSystem.get("dialog_request_counter").toString() : "");
+    }
+    ConversationContext conversationContext = new ConversationContext(
+        responseContext.get("conversation_id") != null ? responseContext.get("conversation_id").toString() : "",
+        conversationContextSystem);
+    inquiryResponseNear.setContext(conversationContext);
+    log.info("response.toString() " + response.toString());
 
     return inquiryResponseNear;
   }

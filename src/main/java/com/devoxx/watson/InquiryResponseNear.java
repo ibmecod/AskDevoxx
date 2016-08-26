@@ -16,6 +16,7 @@
 package com.devoxx.watson;
 
 import com.devoxx.watson.model.AskDevoxxResource;
+import com.devoxx.watson.model.ConversationContext;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -35,7 +36,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InquiryResponseNear implements Serializable {
   @JsonProperty("context")
-  private String context;
+  private ConversationContext context;
 
   @JsonProperty("inquiryText")
   private String inquiryText;
@@ -49,18 +50,18 @@ public class InquiryResponseNear implements Serializable {
   public InquiryResponseNear() {
   }
 
-  public InquiryResponseNear(String context, String inquiryText, String responseText, List<AskDevoxxResource> resources) {
+  public InquiryResponseNear(ConversationContext context, String inquiryText, String responseText, List<AskDevoxxResource> resources) {
     this.context = context;
     this.inquiryText = inquiryText;
     this.responseText = responseText;
     this.resources = resources;
   }
 
-  public String getContext() {
+  public ConversationContext getContext() {
     return context;
   }
 
-  public void setContext(String context) {
+  public void setContext(ConversationContext context) {
     this.context = context;
   }
 
@@ -91,7 +92,7 @@ public class InquiryResponseNear implements Serializable {
   @Override
   public String toString() {
     return "InquiryResponseNear{" +
-        "context='" + context + '\'' +
+        "context=" + context +
         ", inquiryText='" + inquiryText + '\'' +
         ", responseText='" + responseText + '\'' +
         ", resources=" + resources +
