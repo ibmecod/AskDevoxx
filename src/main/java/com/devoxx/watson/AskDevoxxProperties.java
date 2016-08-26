@@ -25,4 +25,40 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "askdevoxx")
 @Component
 public class AskDevoxxProperties {
+  private String workspaceId;
+  private String conversationUsername;
+  private String conversationPassword;
+  private String conversationUrl;
+
+  public String getWorkspaceId() {
+    return workspaceId;
+  }
+
+  public void setWorkspaceId(String workspaceId) {
+    this.workspaceId = workspaceId;
+  }
+
+  public String getConversationUsername() {
+    return conversationUsername;
+  }
+
+  public void setConversationUsername(String conversationUsername) {
+    this.conversationUsername = conversationUsername;
+  }
+
+  public String getConversationPassword() {
+    return conversationPassword;
+  }
+
+  public void setConversationPassword(String conversationPassword) {
+    this.conversationPassword = conversationPassword;
+  }
+
+  public String getConversationUrl() {
+    return conversationUrl;
+  }
+
+  public void setConversationUrl(String conversationUrl) {
+    this.conversationUrl = conversationUrl;
+  }
 }

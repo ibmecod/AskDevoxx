@@ -73,8 +73,6 @@ public class AskDevoxxController {
     InquiryResponseNear inquiryResponseNear = callDevoxxWatsonServices(inquiryText, conversationId,
         dialogStack, dialogTurnCounter, dialogRequestCounter);
 
-
-
     return Optional.ofNullable(inquiryResponseNear)
         .map(cr -> new ResponseEntity<>((Object)cr, HttpStatus.OK))
         .orElse(new ResponseEntity<>("AskDevoxx inquiry request unsuccessful", HttpStatus.INTERNAL_SERVER_ERROR));
@@ -87,13 +85,10 @@ public class AskDevoxxController {
    */
   private InquiryResponseNear callDevoxxWatsonServices(String inquiryText, String conversationId, String dialogStack,
                                                        String dialogTurnCounter, String dialogRequestCounter) {
-
-    //TODO: Move these
-    final String WORKSPACE_ID = "e1faa444-789c-40f6-bc6a-34fd765450a9";
-    final String USERNAME = "76df0216-0b65-4b2a-a16a-f5ee57f455be";
-    final String PASSWORD = "3EcINlm1GczO";
-
-    final String URL = "https://gateway.watsonplatform.net/conversation/api";
+    String workspaceId = askDevoxxProperties.getWorkspaceId();
+    String conversationUsername = askDevoxxProperties.getConversationUsername();
+    String conversationPassword = askDevoxxProperties.getConversationPassword();
+    String conversationUrl = askDevoxxProperties.getConversationUrl();
 
     InquiryResponseNear inquiryResponseNear = new InquiryResponseNear();
 
@@ -131,15 +126,15 @@ public class AskDevoxxController {
 
     ConversationService service =
         new ConversationService(ConversationService.VERSION_DATE_2016_07_11);
-    if (USERNAME != null || PASSWORD != null) {
-      service.setUsernameAndPassword(USERNAME, PASSWORD);
+    if (conversationUsername != null || conversationPassword != null) {
+      service.setUsernameAndPassword(conversationUsername, conversationPassword);
     }
-    if (URL != null) {
-      service.setEndPoint(URL);
+    if (conversationUrl != null) {
+      service.setEndPoint(conversationUrl);
     }
 
     // Use the previously configured service object to make a call to the conversational service
-    MessageResponse response = service.message(WORKSPACE_ID, request).execute();
+    MessageResponse response = service.message(workspaceId, request).execute();
 
     inquiryResponseNear.setInquiryText(inquiryText);
 
