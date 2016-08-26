@@ -18,6 +18,7 @@ package com.devoxx.watson;
 
 import com.devoxx.watson.model.ConversationContext;
 import com.devoxx.watson.model.ConversationContextSystem;
+import com.google.gson.internal.LinkedTreeMap;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageRequest;
 import com.ibm.watson.developer_cloud.conversation.v1.ConversationService;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
@@ -32,9 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Realizes a REST service endpoint that, given an inquiry such as a question, returns a response from the Devoxx
@@ -58,16 +57,21 @@ public class AskDevoxxController {
    * Example endpoint usage is inquiry?text=Java modularity&context=abc123
    *
    * @param inquiryText
-   * @param context
+   * @param conversationId
    * @return Response to the client
    */
   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Object> inquiry(@RequestParam(value = "text") String inquiryText,
-                                       @RequestParam(value = "context", defaultValue="") String context) {
+                                        @RequestParam(value = "conversation_id", defaultValue="") String conversationId,
+                                        @RequestParam(value = "dialog_stack", defaultValue="") String dialogStack,
+                                        @RequestParam(value = "dialog_turn_counter", defaultValue="") String dialogTurnCounter,
+                                        @RequestParam(value = "dialog_request_counter", defaultValue="") String dialogRequestCounter) {
 
-    log.info("Receive request, inquiryText: " + inquiryText + ", context: " + context);
+    log.info("Received request, inquiryText: " + inquiryText + ", conversationId: " + conversationId +
+        ", dialogStack: " + dialogStack + ", dialogTurnCounter: " + dialogTurnCounter + ", dialogRequestCounter: " + dialogRequestCounter);
 
-    InquiryResponseNear inquiryResponseNear = callDevoxxWatsonServices(inquiryText, context);
+    InquiryResponseNear inquiryResponseNear = callDevoxxWatsonServices(inquiryText, conversationId,
+        dialogStack, dialogTurnCounter, dialogRequestCounter);
 
 
 
@@ -81,7 +85,8 @@ public class AskDevoxxController {
    * @param inquiryText
    * @return An answer to the client's inquiry
    */
-  private InquiryResponseNear callDevoxxWatsonServices(String inquiryText, String context) {
+  private InquiryResponseNear callDevoxxWatsonServices(String inquiryText, String conversationId, String dialogStack,
+                                                       String dialogTurnCounter, String dialogRequestCounter) {
 
     //TODO: Move these
     final String WORKSPACE_ID = "e1faa444-789c-40f6-bc6a-34fd765450a9";
@@ -92,12 +97,36 @@ public class AskDevoxxController {
 
     InquiryResponseNear inquiryResponseNear = new InquiryResponseNear();
 
-    Map<String, Object> contextMap = new HashMap<>();
-    contextMap.put("conversation_id", context);
+    Map<String, Object> requestContext = new LinkedTreeMap<>();
+    Map<String, Object> requestContextSystem = new LinkedTreeMap<>();
+
+    if (dialogStack.length() > 2) {
+      List<String> dialogStackList = new ArrayList<>();
+      if (dialogStack.charAt(0) == '[' && dialogStack.charAt(dialogStack.length() - 1) == ']') {
+        dialogStack = dialogStack.substring(1, dialogStack.length() - 1);
+      }
+      dialogStackList.add(dialogStack);
+      requestContextSystem.put("dialog_stack", dialogStackList);
+    }
+
+    if (dialogTurnCounter.length() > 0) {
+      requestContextSystem.put("dialog_turn_counter", new Double(dialogTurnCounter));
+    }
+    if (dialogRequestCounter.length() > 0) {
+      requestContextSystem.put("dialog_request_counter", new Double(dialogRequestCounter));
+    }
+
+    if (dialogStack.length() > 0 || dialogTurnCounter.length() > 0 || dialogRequestCounter.length() > 0) {
+      requestContext.put("system", requestContextSystem);
+    }
+
+    if (conversationId.length() > 0) {
+      requestContext.put("conversation_id", conversationId);
+    }
 
     MessageRequest request = new MessageRequest.Builder()
         .inputText(inquiryText)
-        .context(context.length() > 1 ? contextMap : null)
+        .context(conversationId.length() > 1 ? requestContext : null)
         .build();
 
     ConversationService service =

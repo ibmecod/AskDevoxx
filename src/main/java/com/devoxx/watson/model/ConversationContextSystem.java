@@ -45,10 +45,10 @@ public class ConversationContextSystem implements Serializable {
   public ConversationContextSystem() {
   }
 
-  public ConversationContextSystem(String dialogRequestCounter, String dialogStack, String dialogTurnCounter) {
-    this.dialogRequestCounter = dialogRequestCounter;
+  public ConversationContextSystem(String dialogStack, String dialogTurnCounter, String dialogRequestCounter) {
     this.dialogStack = dialogStack;
     this.dialogTurnCounter = dialogTurnCounter;
+    this.dialogRequestCounter = dialogRequestCounter;
   }
 
   public String getDialogStack() {
