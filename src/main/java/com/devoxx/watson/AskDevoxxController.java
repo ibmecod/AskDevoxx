@@ -142,17 +142,25 @@ public class AskDevoxxController {
     // Use the previously configured service object to make a call to the conversational service
     MessageResponse response = service.message(workspaceId, request).execute();
 
+    String responseText = response.getTextConcatenated(", ");
+
     // Determine if conversation's response is sufficient to answer the user's question or if we
     // should call the retrieve and rank service to obtain better answers
     if (response.getOutput().toString().contains("callRetrieveAndRank")) {
       log.info("Calling retrieve and rank with inquiry: " + inquiryText);
       retrieveAndRankDocumentList = retrieveAndRankController.call(inquiryText);
+
+      // Truncate the extra JSON from the responseText that indicated that retrieve and rank should be called
+      int indexOfLeftCurly = responseText.indexOf('{');
+      if (indexOfLeftCurly > 1){
+        responseText = responseText.substring(0, indexOfLeftCurly);
+      }
     }
 
 
     inquiryResponseNear.setInquiryText(inquiryText);
 
-    inquiryResponseNear.setResponseText(response.getTextConcatenated(", "));
+    inquiryResponseNear.setResponseText(responseText);
 
     inquiryResponseNear.setResources(retrieveAndRankDocumentList);
 
