@@ -25,10 +25,18 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "askdevoxx")
 @Component
 public class AskDevoxxProperties {
+
+  // Watson conversation properties
   private String workspaceId;
   private String conversationUsername;
   private String conversationPassword;
   private String conversationUrl;
+
+  // Retrieve and Rank properties
+  private String retrieveUsername;
+  private String retrievePassword;
+  private String retrieveClusterName;
+  private String retrieveCollectionName;
 
   public String getWorkspaceId() {
     return workspaceId;
@@ -60,5 +68,37 @@ public class AskDevoxxProperties {
 
   public void setConversationUrl(String conversationUrl) {
     this.conversationUrl = conversationUrl;
+  }
+
+  public String getRetrieveUsername() {
+    return retrieveUsername;
+  }
+
+  public void setRetrieveUsername(final String retrieveUsername) {
+    this.retrieveUsername = retrieveUsername;
+  }
+
+  public String getRetrievePassword() {
+    return retrievePassword;
+  }
+
+  public void setRetrievePassword(final String retrievePassword) {
+    this.retrievePassword = retrievePassword;
+  }
+
+  public String getRetrieveClusterName() {
+    return retrieveClusterName;
+  }
+
+  public void setRetrieveClusterName(final String retrieveClusterName) {
+    this.retrieveClusterName = retrieveClusterName;
+  }
+
+  public String getRetrieveCollectionName() {
+    return retrieveCollectionName;
+  }
+
+  public void setRetrieveCollectionName(final String retrieveCollectionName) {
+    this.retrieveCollectionName = retrieveCollectionName;
   }
 }

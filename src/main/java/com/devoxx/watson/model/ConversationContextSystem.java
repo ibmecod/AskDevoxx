@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Holds the system node of the Conversation context
