@@ -18,6 +18,7 @@ package com.devoxx.watson;
 
 import com.devoxx.watson.model.ConversationContext;
 import com.devoxx.watson.model.ConversationContextSystem;
+import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageRequest;
 import com.ibm.watson.developer_cloud.conversation.v1.ConversationService;
@@ -52,6 +53,9 @@ public class AskDevoxxController {
   public AskDevoxxController(AskDevoxxProperties askDevoxxProperties) {
     this.askDevoxxProperties = askDevoxxProperties;
   }
+
+  @Autowired
+  RetrieveAndRankController retrieveAndRankController;
 
   /**
    * Example endpoint usage is inquiry?text=Java modularity&context=abc123
@@ -135,6 +139,14 @@ public class AskDevoxxController {
 
     // Use the previously configured service object to make a call to the conversational service
     MessageResponse response = service.message(workspaceId, request).execute();
+
+    // Determine if conversation's response is sufficient to answer the user's question or if we
+    // should call the retrieve and rank service to obtain better answers
+    if (response.getOutput().toString().contains("callRetrieveAndRank")) {
+      log.info("Calling retrieve and rank with inquiry: " + inquiryText);
+      JsonObject retrieveAndRankResponseJson = retrieveAndRankController.call(inquiryText);
+    }
+
 
     inquiryResponseNear.setInquiryText(inquiryText);
 
