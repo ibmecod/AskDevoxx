@@ -1,7 +1,5 @@
 applications:
-- name: AskDevoxxWatson
+- name: AskDevoxx
   memory: 512M
-  path: AskDevoxx-0.0.1-SNAPSHOT.jar
-  host: AskDevoxxWatson
-  services:
-  - DevoxxConversation-2
+  path: target/AskDevoxx-0.0.1-SNAPSHOT.jar
+  host: AskDevoxx
