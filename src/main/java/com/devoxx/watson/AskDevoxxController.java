@@ -157,9 +157,4 @@ public class AskDevoxxController {
 
     return inquiryResponseNear;
   }
-
-
-  private void callRetrieveAndRank() {
-
-  }
 }
