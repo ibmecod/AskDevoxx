@@ -46,7 +46,6 @@ public class RetrieveAndRankController {
                             .header("Authorization", "Basic " + base64login)
                             .method(Connection.Method.GET)
                             .data("outputMode", "json")
-                            .data("extract", "authors, doc-emotion, pub-date, doc-sentiment, title")
                             .ignoreContentType(true)
                             .execute()
                             .parse();
