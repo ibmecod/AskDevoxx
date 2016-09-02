@@ -18,6 +18,7 @@ package com.devoxx.watson;
 
 import com.devoxx.watson.model.ConversationContext;
 import com.devoxx.watson.model.ConversationContextSystem;
+import com.devoxx.watson.model.RetrieveAndRankDocument;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageRequest;
@@ -95,6 +96,7 @@ public class AskDevoxxController {
     String conversationUrl = askDevoxxProperties.getConversationUrl();
 
     InquiryResponseNear inquiryResponseNear = new InquiryResponseNear();
+    List<RetrieveAndRankDocument> retrieveAndRankDocumentList = new ArrayList<>();
 
     Map<String, Object> requestContext = new LinkedTreeMap<>();
     Map<String, Object> requestContextSystem = new LinkedTreeMap<>();
@@ -144,13 +146,15 @@ public class AskDevoxxController {
     // should call the retrieve and rank service to obtain better answers
     if (response.getOutput().toString().contains("callRetrieveAndRank")) {
       log.info("Calling retrieve and rank with inquiry: " + inquiryText);
-      JsonObject retrieveAndRankResponseJson = retrieveAndRankController.call(inquiryText);
+      retrieveAndRankDocumentList = retrieveAndRankController.call(inquiryText);
     }
 
 
     inquiryResponseNear.setInquiryText(inquiryText);
 
     inquiryResponseNear.setResponseText(response.getTextConcatenated(", "));
+
+    inquiryResponseNear.setResources(retrieveAndRankDocumentList);
 
     Map<String, Object> responseContext = response.getContext();
     Map<String, Object> responseContextSystem = (Map)responseContext.get("system");

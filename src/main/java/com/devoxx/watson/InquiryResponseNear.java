@@ -15,7 +15,7 @@
  */
 package com.devoxx.watson;
 
-import com.devoxx.watson.model.AskDevoxxResource;
+import com.devoxx.watson.model.RetrieveAndRankDocument;
 import com.devoxx.watson.model.ConversationContext;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -45,12 +45,12 @@ public class InquiryResponseNear implements Serializable {
   private String responseText;
 
   @JsonProperty("resources")
-  private List<AskDevoxxResource> resources;
+  private List<RetrieveAndRankDocument> resources;
 
   public InquiryResponseNear() {
   }
 
-  public InquiryResponseNear(ConversationContext context, String inquiryText, String responseText, List<AskDevoxxResource> resources) {
+  public InquiryResponseNear(ConversationContext context, String inquiryText, String responseText, List<RetrieveAndRankDocument> resources) {
     this.context = context;
     this.inquiryText = inquiryText;
     this.responseText = responseText;
@@ -81,11 +81,11 @@ public class InquiryResponseNear implements Serializable {
     this.responseText = responseText;
   }
 
-  public List<AskDevoxxResource> getResources() {
+  public List<RetrieveAndRankDocument> getResources() {
     return resources;
   }
 
-  public void setResources(List<AskDevoxxResource> resources) {
+  public void setResources(List<RetrieveAndRankDocument> resources) {
     this.resources = resources;
   }
 
