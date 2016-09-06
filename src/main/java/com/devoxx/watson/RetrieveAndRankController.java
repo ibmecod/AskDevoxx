@@ -42,11 +42,11 @@ public class RetrieveAndRankController {
 
     try {
 
-      // "start=0&rows=2" = start at row 0 and only return 2 results
+      // "start=0&rows=2" = start at row 0 and return 30 results
       String url = RETRIEVE_AND_RANK_URL +
           askDevoxxProperties.getRetrieveClusterName() + "/solr/" +
           askDevoxxProperties.getRetrieveCollectionName()+
-          "/select?q=" + URLEncoder.encode(question, "UTF-8") + "&wt=json&fl=id,title,body,searchText,score&start=0&rows=30";
+          "/select?q=" + URLEncoder.encode(question, "UTF-8") + "&wt=json&fl=id,title,body,searchText,score&start=0&rows=29";
 
       final Document doc =
           Jsoup.connect(url)

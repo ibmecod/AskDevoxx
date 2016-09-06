@@ -1,0 +1,8 @@
+com\devoxx\watson\AskDevoxxApplication.class
+com\devoxx\watson\model\ConversationContext.class
+com\devoxx\watson\RetrieveAndRankController.class
+com\devoxx\watson\AskDevoxxController.class
+com\devoxx\watson\model\ConversationContextSystem.class
+com\devoxx\watson\InquiryResponseNear.class
+com\devoxx\watson\model\RetrieveAndRankDocument.class
+com\devoxx\watson\AskDevoxxProperties.class

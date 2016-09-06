@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.devoxx.watson.AskDevoxxApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.998 sec - in com.devoxx.watson.AskDevoxxApplicationTests
