@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,7 +46,7 @@ public class InquiryResponseNear implements Serializable {
   private String responseText;
 
   @JsonProperty("resources")
-  private List<RetrieveAndRankDocument> resources;
+  private List<RetrieveAndRankDocument> resources = new ArrayList<>();
 
   public InquiryResponseNear() {
   }
