@@ -37,6 +37,7 @@ public class AskDevoxxProperties {
   private String retrievePassword;
   private String retrieveClusterName;
   private String retrieveCollectionName;
+  private String retrieveUrl;
 
   public String getWorkspaceId() {
     return workspaceId;
@@ -100,5 +101,13 @@ public class AskDevoxxProperties {
 
   public void setRetrieveCollectionName(final String retrieveCollectionName) {
     this.retrieveCollectionName = retrieveCollectionName;
+  }
+
+  public String getRetrieveUrl() {
+    return retrieveUrl;
+  }
+
+  public void setRetrieveUrl(final String retrieveUrl) {
+    this.retrieveUrl = retrieveUrl;
   }
 }
