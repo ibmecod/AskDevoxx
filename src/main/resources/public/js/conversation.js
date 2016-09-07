@@ -29,7 +29,7 @@ var ConversationPanel = (function () {
         // The client displays the initial message to the end user
         displayMessage(
                 {
-                    output: {text: 'This is an alpha version of a Devoxx bot. The goal is to provide an FAQ alternative where you can ask direct questions about Devoxx.'}
+                    output: {text: 'This is an alpha version of a Devoxx bot. The goal is to provide an FAQ alternative where you can ask direct questions about Devoxx or Voxxed related articles.'}
                 },
                 settings.authorTypes.watson);
         setupInputBox();

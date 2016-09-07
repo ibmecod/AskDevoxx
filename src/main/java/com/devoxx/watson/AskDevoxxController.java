@@ -60,7 +60,7 @@ public class AskDevoxxController {
   }
 
   /**
-   * Example endpoint usage is inquiry?text=Java modularity&context=abc123
+   * The inquiry REST endpoint.
    *
    * @param question
    * @return Response to the client
