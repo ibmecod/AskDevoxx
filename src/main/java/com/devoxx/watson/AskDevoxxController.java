@@ -49,14 +49,22 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/inquiry")
 public class AskDevoxxController {
-  private final AskDevoxxProperties askDevoxxProperties;
+
   @Autowired
   RetrieveAndRankController retrieveAndRankController;
   private Log log = LogFactory.getLog(getClass());
 
+  private String workspaceId;
+  private String conversationUsername;
+  private String conversationPassword;
+  private String conversationUrl;
+
   @Autowired
   public AskDevoxxController(AskDevoxxProperties askDevoxxProperties) {
-    this.askDevoxxProperties = askDevoxxProperties;
+    workspaceId = askDevoxxProperties.getWorkspaceId();
+    conversationUsername = askDevoxxProperties.getConversationUsername();
+    conversationPassword = askDevoxxProperties.getConversationPassword();
+    conversationUrl = askDevoxxProperties.getConversationUrl();
   }
 
   /**
@@ -80,13 +88,7 @@ public class AskDevoxxController {
    * @param question
    * @return An answer to the client's inquiry
    */
-  private InquiryResponseNear callDevoxxWatsonServices(DevoxxQuestion question) {
-
-
-    String workspaceId = askDevoxxProperties.getWorkspaceId();
-    String conversationUsername = askDevoxxProperties.getConversationUsername();
-    String conversationPassword = askDevoxxProperties.getConversationPassword();
-    String conversationUrl = askDevoxxProperties.getConversationUrl();
+  private InquiryResponseNear callDevoxxWatsonServices(final DevoxxQuestion question) {
 
     InquiryResponseNear inquiryResponseNear = new InquiryResponseNear();
     List<RetrieveAndRankDocument> retrieveAndRankDocumentList = new ArrayList<>();
@@ -94,36 +96,45 @@ public class AskDevoxxController {
     Map<String, Object> requestContext = new LinkedTreeMap<>();
     Map<String, Object> requestContextSystem = new LinkedTreeMap<>();
 
-    String dialogStack = question.getDialogStack();
-    final String dialogTurnCounter = question.getDialogTurnCounter();
-    final String dialogRequestCounter = question.getDialogRequestCounter();
-    final String conversationId = question.getConversationId();
+    String dialogStack;
+    String dialogTurnCounter;
+    String dialogRequestCounter;
+    String conversationId = null;
 
-    if (dialogStack != null && dialogStack.length() > 2) {
-      List<String> dialogStackList = new ArrayList<>();
-      if (dialogStack.charAt(0) == '[' && dialogStack.charAt(dialogStack.length() - 1) == ']') {
-        dialogStack = dialogStack.substring(1, dialogStack.length() - 1);
-      }
-      dialogStackList.add(dialogStack);
-      requestContextSystem.put("dialog_stack", dialogStackList);
-    }
+    final ConversationContext context = question.getContext();
+    if (context != null) {
 
-    if (dialogTurnCounter != null && dialogTurnCounter.length() > 0) {
-      requestContextSystem.put("dialog_turn_counter", new Double(dialogTurnCounter));
-    }
+        dialogStack = context.getSystem().getDialogStack();
+        dialogTurnCounter = context.getSystem().getDialogTurnCounter();
+        dialogRequestCounter = context.getSystem().getDialogRequestCounter();
+        conversationId = context.getConversationId();
 
-    if (dialogRequestCounter != null && dialogRequestCounter.length() > 0) {
-      requestContextSystem.put("dialog_request_counter", new Double(dialogRequestCounter));
-    }
+        if (dialogStack != null && dialogStack.length() > 2) {
+          List<String> dialogStackList = new ArrayList<>();
+          if (dialogStack.charAt(0) == '[' && dialogStack.charAt(dialogStack.length() - 1) == ']') {
+            dialogStack = dialogStack.substring(1, dialogStack.length() - 1);
+          }
+          dialogStackList.add(dialogStack);
+          requestContextSystem.put("dialog_stack", dialogStackList);
+        }
 
-    if (dialogStack != null && dialogStack.length() > 0 ||
-            dialogTurnCounter != null && dialogTurnCounter.length() > 0 ||
-            dialogRequestCounter != null && dialogRequestCounter.length() > 0) {
-      requestContext.put("system", requestContextSystem);
-    }
+        if (dialogTurnCounter != null && dialogTurnCounter.length() > 0) {
+          requestContextSystem.put("dialog_turn_counter", new Double(dialogTurnCounter));
+        }
 
-    if (conversationId != null && conversationId.length() > 0) {
-      requestContext.put("conversation_id", conversationId);
+        if (dialogRequestCounter != null && dialogRequestCounter.length() > 0) {
+          requestContextSystem.put("dialog_request_counter", new Double(dialogRequestCounter));
+        }
+
+        if (dialogStack != null && dialogStack.length() > 0 ||
+                dialogTurnCounter != null && dialogTurnCounter.length() > 0 ||
+                dialogRequestCounter != null && dialogRequestCounter.length() > 0) {
+          requestContext.put("system", requestContextSystem);
+        }
+
+        if (conversationId != null && conversationId.length() > 0) {
+          requestContext.put("conversation_id", conversationId);
+        }
     }
 
     MessageRequest request = new MessageRequest.Builder()

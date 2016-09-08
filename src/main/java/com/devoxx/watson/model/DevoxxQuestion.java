@@ -6,10 +6,9 @@ package com.devoxx.watson.model;
 public class DevoxxQuestion {
 
     private String text;
-    private String dialogStack;
-    private String dialogTurnCounter;
-    private String dialogRequestCounter;
-    private String conversationId;
+
+    ConversationContext context;
+
 
     public String getText() {
         return text;
@@ -19,35 +18,11 @@ public class DevoxxQuestion {
         this.text = text;
     }
 
-    public String getDialogStack() {
-        return dialogStack;
+    public ConversationContext getContext() {
+        return context;
     }
 
-    public void setDialogStack(final String dialogStack) {
-        this.dialogStack = dialogStack;
-    }
-
-    public String getDialogTurnCounter() {
-        return dialogTurnCounter;
-    }
-
-    public void setDialogTurnCounter(final String dialogTurnCounter) {
-        this.dialogTurnCounter = dialogTurnCounter;
-    }
-
-    public String getDialogRequestCounter() {
-        return dialogRequestCounter;
-    }
-
-    public void setDialogRequestCounter(final String dialogRequestCounter) {
-        this.dialogRequestCounter = dialogRequestCounter;
-    }
-
-    public String getConversationId() {
-        return conversationId;
-    }
-
-    public void setConversationId(final String conversationId) {
-        this.conversationId = conversationId;
+    public void setContext(final ConversationContext context) {
+        this.context = context;
     }
 }
