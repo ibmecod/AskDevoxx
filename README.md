@@ -13,4 +13,12 @@ askdevoxx.retrievePassword=PROVIDE RETRIEVE & RANK PASSWORD
 askdevoxx.retrieveClusterName=PROVIDE CLUSER NAME
 askdevoxx.retrieveCollectionName=articles
 askdevoxx.retrieveUrl=https://gateway.watsonplatform.net/retrieve-and-rank/api/v1/solr_clusters/
+
+askdevoxx.tmpFileStorageLocation=./
+
+# Speech to text credentials
+
+speech.username=<PROVIDE_SPEECH_TO_TEXT_USERNAME>
+speech.password=<PROVIDE_SPEECH_TO_TEXT_PASSWORD>
+
 ```

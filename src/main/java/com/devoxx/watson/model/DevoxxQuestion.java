@@ -25,4 +25,13 @@ public class DevoxxQuestion {
     public void setContext(final ConversationContext context) {
         this.context = context;
     }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("DevoxxQuestion{");
+        sb.append("text='").append(text).append('\'');
+        sb.append(", context=").append(context);
+        sb.append('}');
+        return sb.toString();
+    }
 }

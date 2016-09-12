@@ -16,10 +16,8 @@
 
 package com.devoxx.watson;
 
-import com.devoxx.watson.model.ConversationContext;
-import com.devoxx.watson.model.ConversationContextSystem;
-import com.devoxx.watson.model.DevoxxQuestion;
-import com.devoxx.watson.model.RetrieveAndRankDocument;
+import com.devoxx.watson.exception.FileException;
+import com.devoxx.watson.model.*;
 import com.google.gson.internal.LinkedTreeMap;
 import com.ibm.watson.developer_cloud.conversation.v1.ConversationService;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageRequest;
@@ -30,15 +28,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Realizes a REST service endpoint that, given an inquiry such as a question, returns a response from the Devoxx
@@ -58,6 +56,7 @@ public class AskDevoxxController {
   private String conversationUsername;
   private String conversationPassword;
   private String conversationUrl;
+  private String tmpFileStorageLocation;
 
   @Autowired
   public AskDevoxxController(AskDevoxxProperties askDevoxxProperties) {
@@ -65,6 +64,88 @@ public class AskDevoxxController {
     conversationUsername = askDevoxxProperties.getConversationUsername();
     conversationPassword = askDevoxxProperties.getConversationPassword();
     conversationUrl = askDevoxxProperties.getConversationUrl();
+    tmpFileStorageLocation = askDevoxxProperties.getTmpFileStorageLocation();
+  }
+
+  @Autowired
+  private WatsonSpeechTextController watsonController;
+
+
+  private File storeTmpFile(MultipartFile file) throws FileException {
+    // check if all form parameters are provided
+    if (file == null) {
+      throw new FileException("MultipartFile File Required");
+    }
+    // create our destination folder, if it not exists
+    log.info("Storing: tmpFileStorageLocation:"+tmpFileStorageLocation+":");
+    File uploadPath = new File(tmpFileStorageLocation);
+
+    // Now do something with file...
+    File tmpFile;
+    try {
+      tmpFile = File.createTempFile("devoxx-speechtext", UUID.randomUUID().toString()+".ogg",uploadPath);
+      log.info(tmpFile.getAbsolutePath());
+      FileOutputStream tempFileOutputStream = new FileOutputStream(tmpFile);
+      FileCopyUtils.copy(file.getBytes(), tempFileOutputStream);
+    } catch (IOException e) {
+      log.fatal("Can not save file tmpFile",e);
+      throw new FileException("Can not save file tmpFile",e);
+    }
+    return tmpFile;
+  }
+  private List<SpeechToTextModel> getSpeechToTextModels(MultipartFile file) throws FileException {
+    File tmpFile = storeTmpFile(file);
+    List<SpeechToTextModel> analysisResults = watsonController.speechToText(tmpFile);
+    if (! tmpFile.delete()){
+      log.fatal( "Can't Delete File:{0}:"+ tmpFile.getAbsolutePath()+":");
+    }
+    return analysisResults;
+  }
+
+  /**
+   * Analyse the OGG audio file to determine the sentence and process the inquiry from the detected text
+   * @param file the OGG audio file
+   * @return response to the client
+   */
+  @RequestMapping(value = "/speech"
+          , method = RequestMethod.POST
+          , produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> speechToResponse(
+            @RequestParam("file") MultipartFile file
+          , @RequestHeader("conversationId") String conversationId
+          ){
+    List<SpeechToTextModel> analysisResults;
+    try {
+      analysisResults = getSpeechToTextModels(file);
+    } catch (FileException e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    DevoxxQuestion question = new DevoxxQuestion();
+    ConversationContext conversationContext = null;
+    question.setText(analysisResults.stream().findFirst().map(SpeechToTextModel::getRecognizedText).get());
+    if (!conversationId.equalsIgnoreCase("0")){
+      conversationContext = new ConversationContext();
+      conversationContext.setConversationId(conversationId);
+      ConversationContextSystem conversationContextSystem = new ConversationContextSystem();
+      // TODO: Daniel: No Idead what are the following 3 properties for. But seems to be required
+      conversationContextSystem.setDialogRequestCounter("1.0");
+      conversationContextSystem.setDialogTurnCounter("1.0");
+      conversationContextSystem.setDialogStack("[node_2_1472838558087]");
+      conversationContext.setSystem(conversationContextSystem);
+      question.setContext(conversationContext);
+    }
+    log.info("Speech To Question:"+question.toString()+":");
+    return processInquiry(question);
+  }
+
+
+  protected ResponseEntity<Object> processInquiry (DevoxxQuestion devoxxQuestion) {
+    InquiryResponseNear inquiryResponseNear = callDevoxxWatsonServices(devoxxQuestion);
+
+    return Optional.ofNullable(inquiryResponseNear)
+            .map(cr -> new ResponseEntity<>((Object)cr, HttpStatus.OK))
+            .orElse(new ResponseEntity<>("AskDevoxx inquiry request unsuccessful", HttpStatus.INTERNAL_SERVER_ERROR));
   }
 
   /**
@@ -75,12 +156,7 @@ public class AskDevoxxController {
    */
   @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Object> inquiry(@RequestBody DevoxxQuestion question) {
-
-    InquiryResponseNear inquiryResponseNear = callDevoxxWatsonServices(question);
-
-    return Optional.ofNullable(inquiryResponseNear)
-        .map(cr -> new ResponseEntity<>((Object)cr, HttpStatus.OK))
-        .orElse(new ResponseEntity<>("AskDevoxx inquiry request unsuccessful", HttpStatus.INTERNAL_SERVER_ERROR));
+    return processInquiry(question);
   }
 
   /**

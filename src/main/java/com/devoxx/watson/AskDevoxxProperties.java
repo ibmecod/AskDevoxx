@@ -39,6 +39,16 @@ public class AskDevoxxProperties {
   private String retrieveCollectionName;
   private String retrieveUrl;
 
+  public String getTmpFileStorageLocation() {
+    return tmpFileStorageLocation;
+  }
+
+  public void setTmpFileStorageLocation(String tmpFileStorageLocation) {
+    this.tmpFileStorageLocation = tmpFileStorageLocation;
+  }
+
+  private String tmpFileStorageLocation;
+
   public String getWorkspaceId() {
     return workspaceId;
   }
