@@ -17,17 +17,36 @@
 package com.devoxx.watson;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.MessageSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Starter class for the AskDevoxx
  *
  * @author James Weaver
  */
-@SpringBootApplication
-public class AskDevoxxApplication {
+@SpringBootApplication(exclude = MessageSourceAutoConfiguration.class)
+public class ServletInitializer extends SpringBootServletInitializer {
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		SpringApplication.run(AskDevoxxApplication.class, args);
-	}
+	}*/
+      @Override
+   protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+      return application.sources(ServletInitializer.class);
+   }
 }
+/*
+@RestController
+class RESTController {
+
+   @RequestMapping("/")
+   public String hello() {
+      return "<H1>Hello from Devoxx !</H1>";
+   }
+}*/
+
