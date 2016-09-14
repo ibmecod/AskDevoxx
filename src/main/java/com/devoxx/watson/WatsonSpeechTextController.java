@@ -1,7 +1,9 @@
 package com.devoxx.watson;
 
 import com.devoxx.watson.model.SpeechToTextModel;
+import com.ibm.watson.developer_cloud.http.HttpMediaType;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,7 +53,11 @@ public class WatsonSpeechTextController {
      */
     protected List<SpeechToTextModel> processAudioFile (final File audioFile){
         List<SpeechToTextModel> speechToTextModelList = new ArrayList<>();
-        SpeechResults recognitionResult = speechToText().recognize(audioFile).execute();
+        RecognizeOptions options = new RecognizeOptions.Builder()
+                .contentType(HttpMediaType.AUDIO_WAV)
+                .build();
+
+        SpeechResults recognitionResult = speechToText().recognize(audioFile, options).execute();
         recognitionResult.getResults()
                 .stream()
                 .forEach(
