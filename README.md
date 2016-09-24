@@ -20,5 +20,5 @@ askdevoxx.tmpFileStorageLocation=./
 
 speech.username=<PROVIDE_SPEECH_TO_TEXT_USERNAME>
 speech.password=<PROVIDE_SPEECH_TO_TEXT_PASSWORD>
-
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/devoxx/AskDevoxx # [required])
 ```
