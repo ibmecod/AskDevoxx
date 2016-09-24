@@ -23,3 +23,4 @@ speech.password=<PROVIDE_SPEECH_TO_TEXT_PASSWORD>
 
 [![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/devoxx/AskDevoxx)
 
+After the application is deployed, launch the conversation tooling and import the workspace.json available in this repository to try the sample conversations.
