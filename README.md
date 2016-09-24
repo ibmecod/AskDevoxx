@@ -3,7 +3,6 @@ Bot client and Watson REST service for AskDevoxx
 
 # Provide missing info for application.properties file 
 
-```
 askdevoxx.workspaceId=PROVIDE CONVERSATION SPACE ID
 askdevoxx.conversationUsername=PROVIDE CONVERSATION USERNAME
 askdevoxx.conversationPassword=PROVIDE CONVERSATION PASSWORD
@@ -19,6 +18,8 @@ askdevoxx.tmpFileStorageLocation=./
 # Speech to text credentials
 
 speech.username=<PROVIDE_SPEECH_TO_TEXT_USERNAME>
+
 speech.password=<PROVIDE_SPEECH_TO_TEXT_PASSWORD>
-[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/devoxx/AskDevoxx # [required])
-```
+
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/devoxx/AskDevoxx)
+
