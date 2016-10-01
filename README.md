@@ -3,7 +3,6 @@ Bot client and Watson REST service for AskDevoxx
 
 # Provide missing info for application.properties file 
 
-
 askdevoxx.workspaceId=PROVIDE CONVERSATION SPACE ID
 
 askdevoxx.conversationUsername=PROVIDE CONVERSATION USERNAME
@@ -29,3 +28,7 @@ askdevoxx.tmpFileStorageLocation=./
 speech.username=<PROVIDE_SPEECH_TO_TEXT_USERNAME>
 
 speech.password=<PROVIDE_SPEECH_TO_TEXT_PASSWORD>
+
+
+After the application is deployed, launch the conversation tooling and import the workspace.json available in this repository to try the sample conversations.
+
