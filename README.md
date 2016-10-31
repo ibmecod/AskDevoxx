@@ -11,15 +11,15 @@ askdevoxx.conversationPassword=PROVIDE CONVERSATION PASSWORD
 
 askdevoxx.conversationUrl=https://gateway.watsonplatform.net/conversation/api
 
-askdevoxx.retrieveUsername=PROVIDE RETRIEVE & RANK USERNAME
+askdevoxx.retrieveUsername=<Not applicable>
 
-askdevoxx.retrievePassword=PROVIDE RETRIEVE & RANK PASSWORD
+askdevoxx.retrievePassword=<Not applicable>
 
-askdevoxx.retrieveClusterName=PROVIDE CLUSER NAME
+askdevoxx.retrieveClusterName=<Not applicable>
 
-askdevoxx.retrieveCollectionName=articles
+askdevoxx.retrieveCollectionName=<Not applicable>
 
-askdevoxx.retrieveUrl=https://gateway.watsonplatform.net/retrieve-and-rank/api/v1/solr_clusters/
+askdevoxx.retrieveUrl=<Not applicable>
 
 askdevoxx.tmpFileStorageLocation=./
 
