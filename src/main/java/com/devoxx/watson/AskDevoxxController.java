@@ -61,8 +61,11 @@ public class AskDevoxxController {
   @Autowired
   public AskDevoxxController(AskDevoxxProperties askDevoxxProperties) {
     workspaceId = askDevoxxProperties.getWorkspaceId();
+	//workspaceId = "cd3ceb1d-d327-426f-be47-a837aac2b0f8";
     conversationUsername = askDevoxxProperties.getConversationUsername();
     conversationPassword = askDevoxxProperties.getConversationPassword();
+    //conversationUsername = "3096f919-5cc5-4e96-bc78-53b71fd92dbb";
+    //conversationPassword = "a3MUXvnxHAMH";
     conversationUrl = askDevoxxProperties.getConversationUrl();
     tmpFileStorageLocation = askDevoxxProperties.getTmpFileStorageLocation();
   }
